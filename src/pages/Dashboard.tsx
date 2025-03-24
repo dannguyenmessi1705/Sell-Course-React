@@ -1,352 +1,283 @@
-import { useState, useEffect } from "react";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import type { User, Course, Enrollment } from "../types";
+import { useState } from "react";
+import { Book, Clock, Award, BarChart2, Calendar, CheckCircle, ChevronRight } from "lucide-react";
 
-// Components cho từng tab của Dashboard
-function Overview() {
+// Mock data for enrolled courses
+const enrolledCourses = [
+  {
+    id: 1,
+    title: "Complete Web Development Bootcamp",
+    instructor: "John Smith",
+    progress: 65,
+    lastAccessed: "2 days ago",
+    image: "/placeholder.svg?height=120&width=200",
+    category: "Web Development",
+  },
+  {
+    id: 2,
+    title: "Advanced React & Redux",
+    instructor: "Sarah Johnson",
+    progress: 32,
+    lastAccessed: "1 week ago",
+    image: "/placeholder.svg?height=120&width=200",
+    category: "Web Development",
+  },
+  {
+    id: 3,
+    title: "iOS App Development with Swift",
+    instructor: "Michael Chen",
+    progress: 18,
+    lastAccessed: "3 days ago",
+    image: "/placeholder.svg?height=120&width=200",
+    category: "Mobile Development",
+  },
+];
+
+// Mock data for upcoming events
+const upcomingEvents = [
+  {
+    id: 1,
+    title: "Live Q&A Session: Web Development",
+    date: "May 15, 2024",
+    time: "3:00 PM - 4:30 PM",
+    instructor: "John Smith",
+  },
+  {
+    id: 2,
+    title: "Workshop: Building a Portfolio Website",
+    date: "May 18, 2024",
+    time: "1:00 PM - 3:00 PM",
+    instructor: "Sarah Johnson",
+  },
+  {
+    id: 3,
+    title: "Code Review Session: React Projects",
+    date: "May 22, 2024",
+    time: "5:00 PM - 6:00 PM",
+    instructor: "David Wilson",
+  },
+];
+
+// Mock data for achievements
+const achievements = [
+  {
+    id: 1,
+    title: "Fast Learner",
+    description: "Completed 5 course modules in one day",
+    date: "April 28, 2024",
+    icon: <Clock className="h-8 w-8 text-amber-500" />,
+  },
+  {
+    id: 2,
+    title: "Perfect Score",
+    description: "Scored 100% on the JavaScript Fundamentals quiz",
+    date: "April 15, 2024",
+    icon: <Award className="h-8 w-8 text-amber-500" />,
+  },
+  {
+    id: 3,
+    title: "Consistent Learner",
+    description: "Studied for 7 consecutive days",
+    date: "April 10, 2024",
+    icon: <CheckCircle className="h-8 w-8 text-amber-500" />,
+  },
+];
+
+const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState("courses");
+
   return (
-    <div>
-      <h2 className="mb-6 text-2xl font-bold">Tổng quan</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg bg-blue-50 p-4 sm:p-6">
-          <h3 className="mb-2 text-sm font-semibold text-blue-700 sm:text-base">Khóa học đã đăng ký</h3>
-          <p className="text-2xl font-bold text-blue-600 sm:text-3xl">5</p>
+    <div className="min-h-screen w-full bg-gray-50">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        {/* Dashboard header */}
+        <div className="mb-10">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">Welcome back, Alex!</h1>
+          <p className="text-gray-600">Track your progress and continue learning</p>
         </div>
-        <div className="rounded-lg bg-green-50 p-4 sm:p-6">
-          <h3 className="mb-2 text-sm font-semibold text-green-700 sm:text-base">Khóa học đã hoàn thành</h3>
-          <p className="text-2xl font-bold text-green-600 sm:text-3xl">3</p>
-        </div>
-        <div className="rounded-lg bg-purple-50 p-4 sm:p-6">
-          <h3 className="mb-2 text-sm font-semibold text-purple-700 sm:text-base">Chứng chỉ đã nhận</h3>
-          <p className="text-2xl font-bold text-purple-600 sm:text-3xl">2</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function MyCourses() {
-  const [enrollments, setEnrollments] = useState<(Enrollment & { course: Course })[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // TODO: Replace with actual API call
-    const fetchEnrollments = async () => {
-      try {
-        const response = await Promise.resolve([
-          {
-            id: 1,
-            student_id: 1,
-            course_id: 1,
-            purchased_at: new Date(),
-            created_at: new Date(),
-            last_updated_at: new Date(),
-            course: {
-              id: 1,
-              title: "React for Beginners",
-              description: "Learn React from scratch with hands-on projects",
-              price: 499000,
-              instructor_id: 1,
-              category_id: 1,
-              is_published: true,
-              image_url: "https://placehold.co/600x400",
-              created_at: new Date(),
-              last_updated_at: new Date(),
-            },
-          },
-        ]);
-        setEnrollments(response);
-      } catch (error) {
-        console.error("Error fetching enrollments:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEnrollments();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="animate-pulse space-y-4">
-        {[1, 2, 3].map((n) => (
-          <div key={n} className="h-32 rounded-lg bg-gray-200" />
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h2 className="mb-6 text-2xl font-bold">Khóa học của tôi</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {enrollments.map((enrollment) => (
-          <div key={enrollment.id} className="flex flex-col rounded-lg bg-white p-4 shadow-sm">
-            <img
-              src={enrollment.course.image_url}
-              alt={enrollment.course.title}
-              className="mb-4 h-48 w-full rounded-lg object-cover"
-            />
-            <div className="flex flex-grow flex-col">
-              <h3 className="mb-2 font-semibold">{enrollment.course.title}</h3>
-              <p className="mb-4 line-clamp-2 text-sm text-gray-600">{enrollment.course.description}</p>
-              <Link to={`/courses/${enrollment.course.id}`} className="mt-auto text-blue-600 hover:text-blue-700">
-                Tiếp tục học →
-              </Link>
+        {/* Dashboard stats */}
+        <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
+            <div className="bg-primary/10 mr-4 rounded-full p-3">
+              <Book className="text-primary h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Enrolled Courses</p>
+              <p className="text-2xl font-bold text-gray-900">3</p>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-function TeachingCourses() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // TODO: Replace with actual API call
-    const fetchCourses = async () => {
-      try {
-        const response = await Promise.resolve([
-          {
-            id: 1,
-            title: "React for Beginners",
-            description: "Learn React from scratch with hands-on projects",
-            price: 499000,
-            instructor_id: 1,
-            category_id: 1,
-            is_published: true,
-            image_url: "https://placehold.co/600x400",
-            created_at: new Date(),
-            last_updated_at: new Date(),
-          },
-        ]);
-        setCourses(response);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="animate-pulse space-y-4">
-        {[1, 2, 3].map((n) => (
-          <div key={n} className="h-32 rounded-lg bg-gray-200" />
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-2xl font-bold">Khóa học giảng dạy</h2>
-        <Link
-          to="/dashboard/courses/new"
-          className="w-full rounded-md bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700 sm:w-auto"
-        >
-          Tạo khóa học mới
-        </Link>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {courses.map((course) => (
-          <div key={course.id} className="flex flex-col rounded-lg bg-white p-4 shadow-sm">
-            <img src={course.image_url} alt={course.title} className="mb-4 h-48 w-full rounded-lg object-cover" />
-            <div className="flex flex-grow flex-col">
-              <h3 className="mb-2 font-semibold">{course.title}</h3>
-              <p className="mb-4 line-clamp-2 text-sm text-gray-600">{course.description}</p>
-              <div className="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span
-                  className={`inline-block rounded-full px-2 py-1 text-xs ${
-                    course.is_published ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                  }`}
-                >
-                  {course.is_published ? "Đã xuất bản" : "Bản nháp"}
-                </span>
-                <div className="flex gap-2 sm:gap-4">
-                  <Link to={`/dashboard/courses/${course.id}/edit`} className="text-blue-600 hover:text-blue-700">
-                    Chỉnh sửa
-                  </Link>
-                  <Link to={`/dashboard/courses/${course.id}/lessons`} className="text-blue-600 hover:text-blue-700">
-                    Quản lý bài học
-                  </Link>
-                </div>
-              </div>
+          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
+            <div className="mr-4 rounded-full bg-green-100 p-3">
+              <Clock className="h-6 w-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Hours Learned</p>
+              <p className="text-2xl font-bold text-gray-900">42</p>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-function Settings() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
+            <div className="mr-4 rounded-full bg-amber-100 p-3">
+              <Award className="h-6 w-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Certificates</p>
+              <p className="text-2xl font-bold text-gray-900">1</p>
+            </div>
+          </div>
 
-  useEffect(() => {
-    // TODO: Replace with actual API call
-    const fetchUser = async () => {
-      try {
-        const response = await Promise.resolve({
-          id: 1,
-          username: "johndoe",
-          fullname: "John Doe",
-          email: "john@example.com",
-          role: "instructor" as const,
-          date_of_birth: new Date(),
-          password: "",
-          avatar: "https://placehold.co/100x100",
-          created_at: new Date(),
-          last_updated_at: new Date(),
-        });
-        setUser(response);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  if (loading || !user) {
-    return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-32 rounded-lg bg-gray-200" />
-        <div className="h-20 rounded-lg bg-gray-200" />
-        <div className="h-20 rounded-lg bg-gray-200" />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h2 className="mb-6 text-2xl font-bold">Cài đặt tài khoản</h2>
-      <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6">
-        <div className="mb-6 flex flex-col items-center text-center sm:flex-row sm:text-left">
-          <img src={user.avatar} alt={user.fullname} className="mb-4 size-20 rounded-full sm:mr-4 sm:mb-0" />
-          <div>
-            <h3 className="font-semibold">{user.fullname}</h3>
-            <p className="text-gray-600">{user.email}</p>
+          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
+            <div className="mr-4 rounded-full bg-purple-100 p-3">
+              <BarChart2 className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Overall Progress</p>
+              <p className="text-2xl font-bold text-gray-900">38%</p>
+            </div>
           </div>
         </div>
-        <form className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Họ và tên</label>
-            <input
-              type="text"
-              defaultValue={user.fullname}
-              className="w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              defaultValue={user.email}
-              className="w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Ngày sinh</label>
-            <input
-              type="date"
-              defaultValue={user.date_of_birth.toISOString().split("T")[0]}
-              className="w-full rounded-md border px-3 py-2 focus:border-blue-500 focus:outline-none"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 sm:w-auto"
-          >
-            Lưu thay đổi
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
 
-export default function Dashboard() {
-  const navigate = useNavigate();
-  // TODO: Replace with actual auth state
-  const user = {
-    role: "instructor" as const,
-  };
-
-  const [activeTab, setActiveTab] = useState("overview");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const tabs = [
-    { id: "overview", label: "Tổng quan", component: Overview },
-    { id: "my-courses", label: "Khóa học của tôi", component: MyCourses },
-    ...(user.role === "instructor"
-      ? [
-          {
-            id: "teaching",
-            label: "Khóa học giảng dạy",
-            component: TeachingCourses,
-          },
-        ]
-      : []),
-    { id: "settings", label: "Cài đặt", component: Settings },
-  ];
-
-  const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component || Overview;
-
-  return (
-    <div className="flex min-h-screen w-full">
-      {/* Mobile Sidebar Toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 z-50 rounded-md bg-blue-600 px-4 py-2 text-white lg:hidden"
-      >
-        {isSidebarOpen ? "Đóng menu" : "Mở menu"}
-      </button>
-
-      {/* Sidebar */}
-      <div
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-white shadow-lg transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="sticky top-0 h-full overflow-y-auto p-4">
-          <nav className="space-y-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`flex w-full items-center rounded-md px-4 py-2 text-left ${
-                  activeTab === tab.id ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-50"
-                }`}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setIsSidebarOpen(false);
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
+        {/* Dashboard tabs */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="flex space-x-8">
+            <button
+              onClick={() => setActiveTab("courses")}
+              className={`border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "courses"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+            >
+              My Courses
+            </button>
+            <button
+              onClick={() => setActiveTab("events")}
+              className={`border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "events"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+            >
+              Upcoming Events
+            </button>
+            <button
+              onClick={() => setActiveTab("achievements")}
+              className={`border-b-2 px-1 py-4 text-sm font-medium ${
+                activeTab === "achievements"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
+              }`}
+            >
+              Achievements
+            </button>
           </nav>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="flex-1 bg-gray-50">
-        <div className="h-full p-4 lg:p-8">
-          <div className="h-full rounded-lg bg-white p-6 shadow-sm">
-            <ActiveComponent />
-          </div>
+        {/* Tab content */}
+        <div>
+          {/* My Courses tab */}
+          {activeTab === "courses" && (
+            <div className="space-y-6">
+              {enrolledCourses.map((course) => (
+                <div key={course.id} className="overflow-hidden rounded-xl bg-white shadow-sm">
+                  <div className="flex flex-col md:flex-row">
+                    <div className="md:w-1/4 lg:w-1/5">
+                      <img
+                        src={course.image || "/placeholder.svg"}
+                        alt={course.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="p-6 md:w-3/4 lg:w-4/5">
+                      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
+                        <div>
+                          <div className="text-primary mb-1 text-xs font-semibold tracking-wide uppercase">
+                            {course.category}
+                          </div>
+                          <h3 className="mb-1 text-xl font-semibold text-gray-900">{course.title}</h3>
+                          <p className="text-sm text-gray-500">Instructor: {course.instructor}</p>
+                        </div>
+                        <div className="mt-4 md:mt-0">
+                          <span className="text-sm text-gray-500">Last accessed: {course.lastAccessed}</span>
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="mb-1 flex justify-between">
+                          <span className="text-sm font-medium text-gray-700">Progress</span>
+                          <span className="text-sm font-medium text-gray-700">{course.progress}%</span>
+                        </div>
+                        <div className="h-2.5 w-full rounded-full bg-gray-200">
+                          <div className="bg-primary h-2.5 rounded-full" style={{ width: `${course.progress}%` }}></div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <button className="bg-primary hover:bg-primary/90 inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white transition-colors">
+                          Continue Learning
+                          <ChevronRight className="ml-1 h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Upcoming Events tab */}
+          {activeTab === "events" && (
+            <div className="space-y-4">
+              {upcomingEvents.map((event) => (
+                <div key={event.id} className="rounded-xl bg-white p-6 shadow-sm">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-start">
+                      <div className="bg-primary/10 mr-4 flex-shrink-0 rounded-full p-3">
+                        <Calendar className="text-primary h-6 w-6" />
+                      </div>
+                      <div>
+                        <h3 className="mb-1 text-lg font-semibold text-gray-900">{event.title}</h3>
+                        <p className="mb-1 text-gray-500">Instructor: {event.instructor}</p>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <Clock className="mr-1 h-4 w-4" />
+                          <span>
+                            {event.date}, {event.time}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 md:mt-0">
+                      <button className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
+                        Add to Calendar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Achievements tab */}
+          {activeTab === "achievements" && (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {achievements.map((achievement) => (
+                <div key={achievement.id} className="rounded-xl bg-white p-6 shadow-sm">
+                  <div className="mb-4 flex items-center">
+                    <div className="mr-4">{achievement.icon}</div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{achievement.title}</h3>
+                      <p className="text-sm text-gray-500">Earned on {achievement.date}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-700">{achievement.description}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

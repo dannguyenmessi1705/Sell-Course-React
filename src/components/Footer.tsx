@@ -1,73 +1,133 @@
 import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram, Mail, Phone, MapPin } from "lucide-react";
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white">
-      <div className="container mx-auto px-4 py-8">
+    <footer className="bg-gray-900 text-white">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Về EduCourse</h3>
-            <p className="text-gray-400">
-              Nền tảng học trực tuyến hàng đầu với các khóa học chất lượng từ các giảng viên uy tín.
+            <h2 className="mb-4 text-2xl font-bold">CourseHub</h2>
+            <p className="mb-4 text-gray-400">
+              Empowering your learning journey with high-quality courses from industry experts.
             </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                <Facebook className="h-5 w-5" />
+                <span className="sr-only">Facebook</span>
+              </a>
+              <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                <Twitter className="h-5 w-5" />
+                <span className="sr-only">Twitter</span>
+              </a>
+              <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                <Instagram className="h-5 w-5" />
+                <span className="sr-only">Instagram</span>
+              </a>
+            </div>
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Liên kết</h3>
+            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/courses" className="text-gray-400 hover:text-white">
-                  Khóa học
+                <Link to="/" className="text-gray-400 transition-colors hover:text-white">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link to="/categories" className="text-gray-400 hover:text-white">
-                  Danh mục
+                <Link to="/courses" className="text-gray-400 transition-colors hover:text-white">
+                  Courses
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-400 hover:text-white">
-                  Về chúng tôi
+                <Link to="/dashboard" className="text-gray-400 transition-colors hover:text-white">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link to="/cart" className="text-gray-400 transition-colors hover:text-white">
+                  Cart
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Hỗ trợ</h3>
+            <h3 className="mb-4 text-lg font-semibold">Categories</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/faq" className="text-gray-400 hover:text-white">
-                  FAQ
-                </Link>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Web Development
+                </a>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-400 hover:text-white">
-                  Liên hệ
-                </Link>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Mobile Development
+                </a>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white">
-                  Điều khoản sử dụng
-                </Link>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Data Science
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  UI/UX Design
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Business
+                </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Liên hệ</h3>
-            <ul className="space-y-2 text-gray-400">
-              <li>Email: contact@educourse.com</li>
-              <li>Điện thoại: (84) 123-456-789</li>
-              <li>Địa chỉ: 123 Đường ABC, Quận XYZ, TP.HCM</li>
+            <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
+            <ul className="space-y-3">
+              <li className="flex items-start">
+                <MapPin className="mt-0.5 mr-2 h-5 w-5 text-gray-400" />
+                <span className="text-gray-400">123 Education St, Learning City, 10001</span>
+              </li>
+              <li className="flex items-center">
+                <Phone className="mr-2 h-5 w-5 text-gray-400" />
+                <span className="text-gray-400">+1 (555) 123-4567</span>
+              </li>
+              <li className="flex items-center">
+                <Mail className="mr-2 h-5 w-5 text-gray-400" />
+                <span className="text-gray-400">info@coursehub.com</span>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 EduCourse. Tất cả quyền được bảo lưu.</p>
+        <div className="mt-12 flex flex-col items-center justify-between border-t border-gray-800 pt-8 md:flex-row">
+          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} CourseHub. All rights reserved.</p>
+          <div className="mt-4 md:mt-0">
+            <ul className="flex space-x-6 text-sm">
+              <li>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-400 transition-colors hover:text-white">
+                  Cookie Policy
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
