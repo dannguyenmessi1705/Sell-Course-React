@@ -26,13 +26,13 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    // Bạn cũng có thể ghi log lỗi vào dịch vụ báo cáo lỗi
+    // ghi log lỗi vào dịch vụ báo cáo lỗi
     console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   render(): ReactNode {
     if (this.state.hasError) {
-      // Bạn có thể render bất kỳ UI dự phòng nào
+      // Render UI dự phòng nào
       if (this.props.fallback) {
         return this.props.fallback;
       }

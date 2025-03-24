@@ -82,202 +82,48 @@ const achievements = [
   },
 ];
 
+// src/pages/Dashboard.tsx
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { StudentDashboard } from "./student";
+import { InstructorDashboard } from "./instructor";
+import { AdminDashboard } from "./admin";
+
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState("courses");
+  const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
 
-  return (
-    <div className="min-h-screen w-full bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Dashboard header */}
-        <div className="mb-10">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">Welcome back, Alex!</h1>
-          <p className="text-gray-600">Track your progress and continue learning</p>
-        </div>
+  useEffect(() => {
+    if (!isLoading && user) {
+      if (user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else if (user.role === "instructor") {
+        navigate("/instructor", { replace: true });
+      } else {
+        navigate("/student", { replace: true });
+      }
+    }
+  }, [user, isLoading, navigate]);
 
-        {/* Dashboard stats */}
-        <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
-            <div className="bg-primary/10 mr-4 rounded-full p-3">
-              <Book className="text-primary h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Enrolled Courses</p>
-              <p className="text-2xl font-bold text-gray-900">3</p>
-            </div>
-          </div>
-
-          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
-            <div className="mr-4 rounded-full bg-green-100 p-3">
-              <Clock className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Hours Learned</p>
-              <p className="text-2xl font-bold text-gray-900">42</p>
-            </div>
-          </div>
-
-          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
-            <div className="mr-4 rounded-full bg-amber-100 p-3">
-              <Award className="h-6 w-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Certificates</p>
-              <p className="text-2xl font-bold text-gray-900">1</p>
-            </div>
-          </div>
-
-          <div className="flex items-center rounded-xl bg-white p-6 shadow-sm">
-            <div className="mr-4 rounded-full bg-purple-100 p-3">
-              <BarChart2 className="h-6 w-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Overall Progress</p>
-              <p className="text-2xl font-bold text-gray-900">38%</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Dashboard tabs */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab("courses")}
-              className={`border-b-2 px-1 py-4 text-sm font-medium ${
-                activeTab === "courses"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              My Courses
-            </button>
-            <button
-              onClick={() => setActiveTab("events")}
-              className={`border-b-2 px-1 py-4 text-sm font-medium ${
-                activeTab === "events"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              Upcoming Events
-            </button>
-            <button
-              onClick={() => setActiveTab("achievements")}
-              className={`border-b-2 px-1 py-4 text-sm font-medium ${
-                activeTab === "achievements"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-              }`}
-            >
-              Achievements
-            </button>
-          </nav>
-        </div>
-
-        {/* Tab content */}
-        <div>
-          {/* My Courses tab */}
-          {activeTab === "courses" && (
-            <div className="space-y-6">
-              {enrolledCourses.map((course) => (
-                <div key={course.id} className="overflow-hidden rounded-xl bg-white shadow-sm">
-                  <div className="flex flex-col md:flex-row">
-                    <div className="md:w-1/4 lg:w-1/5">
-                      <img
-                        src={course.image || "/placeholder.svg"}
-                        alt={course.title}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="p-6 md:w-3/4 lg:w-4/5">
-                      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <div className="text-primary mb-1 text-xs font-semibold tracking-wide uppercase">
-                            {course.category}
-                          </div>
-                          <h3 className="mb-1 text-xl font-semibold text-gray-900">{course.title}</h3>
-                          <p className="text-sm text-gray-500">Instructor: {course.instructor}</p>
-                        </div>
-                        <div className="mt-4 md:mt-0">
-                          <span className="text-sm text-gray-500">Last accessed: {course.lastAccessed}</span>
-                        </div>
-                      </div>
-
-                      <div className="mb-4">
-                        <div className="mb-1 flex justify-between">
-                          <span className="text-sm font-medium text-gray-700">Progress</span>
-                          <span className="text-sm font-medium text-gray-700">{course.progress}%</span>
-                        </div>
-                        <div className="h-2.5 w-full rounded-full bg-gray-200">
-                          <div className="bg-primary h-2.5 rounded-full" style={{ width: `${course.progress}%` }}></div>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end">
-                        <button className="bg-primary hover:bg-primary/90 inline-flex items-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white transition-colors">
-                          Continue Learning
-                          <ChevronRight className="ml-1 h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Upcoming Events tab */}
-          {activeTab === "events" && (
-            <div className="space-y-4">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="rounded-xl bg-white p-6 shadow-sm">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                    <div className="flex items-start">
-                      <div className="bg-primary/10 mr-4 flex-shrink-0 rounded-full p-3">
-                        <Calendar className="text-primary h-6 w-6" />
-                      </div>
-                      <div>
-                        <h3 className="mb-1 text-lg font-semibold text-gray-900">{event.title}</h3>
-                        <p className="mb-1 text-gray-500">Instructor: {event.instructor}</p>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Clock className="mr-1 h-4 w-4" />
-                          <span>
-                            {event.date}, {event.time}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-4 md:mt-0">
-                      <button className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50">
-                        Add to Calendar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Achievements tab */}
-          {activeTab === "achievements" && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {achievements.map((achievement) => (
-                <div key={achievement.id} className="rounded-xl bg-white p-6 shadow-sm">
-                  <div className="mb-4 flex items-center">
-                    <div className="mr-4">{achievement.icon}</div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{achievement.title}</h3>
-                      <p className="text-sm text-gray-500">Earned on {achievement.date}</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700">{achievement.description}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex h-[60vh] items-center justify-center">
+        <div className="border-t-primary h-12 w-12 animate-spin rounded-full border-4 border-gray-200"></div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Backup renders nếu chuyển hướng không thành công
+  if (user?.role === "admin") {
+    return <AdminDashboard />;
+  }
+
+  if (user?.role === "instructor") {
+    return <InstructorDashboard />;
+  }
+
+  return <StudentDashboard />;
 };
 
 export default Dashboard;
