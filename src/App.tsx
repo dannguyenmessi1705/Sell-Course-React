@@ -18,6 +18,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import Profile from "./pages/Profile";
+import Analytics from "./pages/Analytics";
+import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 
 function App() {
   return (
@@ -58,6 +60,24 @@ function App() {
                 element={
                   <RouteGuard allowedRoles={["instructor", "admin"]}>
                     <InstructorDashboard />
+                  </RouteGuard>
+                }
+              />
+
+              <Route
+                path="instructor/analytics"
+                element={
+                  <RouteGuard allowedRoles={["instructor", "admin"]}>
+                    <InstructorAnalytics />
+                  </RouteGuard>
+                }
+              />
+
+              <Route
+                path="analytics"
+                element={
+                  <RouteGuard allowedRoles={["admin"]}>
+                    <Analytics />
                   </RouteGuard>
                 }
               />
