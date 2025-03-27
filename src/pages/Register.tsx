@@ -1,7 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { SignUpRequest } from "../models/auth";
+import { authService } from "../libs/authService";
+
+// Hàm format ngày tháng
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     fullname: "",
@@ -11,14 +25,33 @@ export default function Register() {
     date_of_birth: "",
   });
 
+  const signUpMutation = useMutation({
+    mutationFn: authService.signUp,
+    onSuccess: () => {
+      toast.success("Đăng ký thành công!");
+      navigate("/login");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.status?.message || "Đăng ký thất bại");
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic
     if (formData.password !== formData.confirmPassword) {
-      alert("Mật khẩu không khớp");
+      toast.error("Mật khẩu không khớp");
       return;
     }
-    console.log("Register form submitted:", formData);
+
+    const signUpData: SignUpRequest = {
+      username: formData.username,
+      fullname: formData.fullname,
+      email: formData.email,
+      dateOfBirth: formatDate(formData.date_of_birth),
+      password: formData.password,
+    };
+
+    signUpMutation.mutate(signUpData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +76,7 @@ export default function Register() {
               id="username"
               name="username"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.username}
               onChange={handleChange}
             />
@@ -58,7 +91,7 @@ export default function Register() {
               id="fullname"
               name="fullname"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.fullname}
               onChange={handleChange}
             />
@@ -73,7 +106,7 @@ export default function Register() {
               id="email"
               name="email"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.email}
               onChange={handleChange}
             />
@@ -88,7 +121,7 @@ export default function Register() {
               id="date_of_birth"
               name="date_of_birth"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.date_of_birth}
               onChange={handleChange}
             />
@@ -103,7 +136,7 @@ export default function Register() {
               id="password"
               name="password"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.password}
               onChange={handleChange}
             />
@@ -118,7 +151,7 @@ export default function Register() {
               id="confirmPassword"
               name="confirmPassword"
               required
-              className="w-full rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={formData.confirmPassword}
               onChange={handleChange}
             />
@@ -126,9 +159,10 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 py-2 font-semibold text-white transition-colors hover:bg-blue-700"
+            disabled={signUpMutation.isPending}
+            className="w-full rounded-md bg-blue-600 py-2 font-semibold text-white transition-colors hover:bg-blue-700 disabled:bg-blue-400"
           >
-            Đăng ký
+            {signUpMutation.isPending ? "Đang đăng ký..." : "Đăng ký"}
           </button>
         </form>
 
